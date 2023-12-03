@@ -1,0 +1,17 @@
+{
+  "name": "threejs-journey",
+  "version": "1.0.0",
+  "description": "Starting my threejs learning journey with https://threejs-journey.com/ 🎉",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "vite": "^5.0.4"
+  }
+}
