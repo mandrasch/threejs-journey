@@ -8,6 +8,34 @@ const canvas = document.querySelector(".webgl");
 // Scene
 const scene = new THREE.Scene();
 
+/**
+ * Objects
+ */
+const group = new THREE.Group();
+group.position.y = -2;
+group.position.x = 1.5;
+scene.add(group);
+
+const cube1 = new THREE.Mesh(
+	new THREE.BoxGeometry(1, 1, 1),
+	new THREE.MeshBasicMaterial({ color: "green", wireframe: true }),
+);
+group.add(cube1);
+
+const cube2 = new THREE.Mesh(
+	new THREE.BoxGeometry(1, 1, 1),
+	new THREE.MeshBasicMaterial({ color: "orange", wireframe: true }),
+);
+cube2.position.x = 2;
+group.add(cube2);
+
+const cube3 = new THREE.Mesh(
+	new THREE.BoxGeometry(1, 1, 1),
+	new THREE.MeshBasicMaterial({ color: "red", wireframe: true }),
+);
+cube3.position.x = -2;
+group.add(cube3);
+
 // Object
 const geometry = new THREE.BoxGeometry(1, 1, 1);
 
@@ -18,8 +46,6 @@ const material = new THREE.MeshBasicMaterial({
 });
 const mesh = new THREE.Mesh(geometry, material);
 
-scene.add(mesh);
-
 // Axes helper
 const axesHelper = new THREE.AxesHelper(2);
 scene.add(axesHelper);
@@ -28,7 +54,7 @@ scene.add(axesHelper);
 mesh.position.set(0.7, -0.6, 0.3); // x, y, z
 
 // Scale
-mesh.scale.set(2, 0.5, 0.5);
+mesh.scale.set(2, 0.25, 0.5);
 
 // Rotation - euler angles
 // beware: goes by default in order of x,y, z
@@ -57,6 +83,8 @@ console.log(mesh.position.length()); // will be 1 after normalize
 
 // Look At
 camera.lookAt(mesh.position);
+
+// Groups
 
 // Renderer
 const renderer = new THREE.WebGLRenderer({
