@@ -1,6 +1,18 @@
 console.log("JavaScript is working");
 
 import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import gsap from "gsap";
+
+const cursor = {
+	x: 0,
+	y: 0,
+};
+
+window.addEventListener("mousemove", (event) => {
+	cursor.x = event.clientX / sizes.width - 0.5;
+	cursor.y = -(event.clientY / sizes.height - 0.5);
+});
 
 // Canvas
 const canvas = document.querySelector(".webgl");
@@ -12,17 +24,17 @@ const scene = new THREE.Scene();
  * Objects
  */
 const group = new THREE.Group();
-group.position.y = -2;
-group.position.x = 1.5;
+// group.position.y = -2;
+// group.position.x = 1.5;
 scene.add(group);
 
 const cube1 = new THREE.Mesh(
 	new THREE.BoxGeometry(1, 1, 1),
-	new THREE.MeshBasicMaterial({ color: "green", wireframe: true }),
+	new THREE.MeshBasicMaterial({ color: "green", wireframe: false }),
 );
 group.add(cube1);
 
-const cube2 = new THREE.Mesh(
+/*const cube2 = new THREE.Mesh(
 	new THREE.BoxGeometry(1, 1, 1),
 	new THREE.MeshBasicMaterial({ color: "orange", wireframe: true }),
 );
@@ -34,11 +46,11 @@ const cube3 = new THREE.Mesh(
 	new THREE.MeshBasicMaterial({ color: "red", wireframe: true }),
 );
 cube3.position.x = -2;
-group.add(cube3);
+group.add(cube3);*/
 
 // Axes helper
-const axesHelper = new THREE.AxesHelper(2);
-scene.add(axesHelper);
+/*const axesHelper = new THREE.AxesHelper(2);
+scene.add(axesHelper);*/
 
 // Object
 /*const geometry = new THREE.BoxGeometry(1, 1, 1);
@@ -67,17 +79,34 @@ const sizes = {
 // field of view = 75, high (easier for beginners), aspect ratio
 // Camera frustum vertical field of view, from bottom to top of view, in degrees. Default is 50.
 // https://threejs.org/docs/#api/en/cameras/PerspectiveCamera
-const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height);
-camera.position.set(null, null, 3); // z = camera is moved backward before
+const camera = new THREE.PerspectiveCamera(
+	75,
+	sizes.width / sizes.height,
+	0.1,
+	100,
+);
+
+/*const aspectRatio = sizes.width / sizes.height;
+const camera = new THREE.OrthographicCamera(
+	-1 * aspectRatio,
+	1 * aspectRatio,
+	1,
+	-1,
+	0.1,
+	100,
+);*/
+
+camera.position.z = 3; // move backward
+// camera.position.set(null, null, 3); // z = camera is moved backward before
+// Look At
+camera.lookAt(group.position);
+scene.add(camera);
 
 // distance between object and camera
 // console.log(mesh.position.distanceTo(camera.position));
 // https://threejs.org/docs/#api/en/math/Vector3.normalize
 // mesh.position.normalize();
 //console.log(mesh.position.length()); // will be 1 after normalize
-
-// Look At
-camera.lookAt(group.position);
 
 // Renderer
 const renderer = new THREE.WebGLRenderer({
@@ -92,8 +121,32 @@ renderer.render(scene, camera);
 // used to show animations on same speed on all monitor frequencies
 const clock = new THREE.Clock();
 
+// gsap has its own tick, but we need to render it ourselves with tick()
+// gsap.to(group.position, { duration: 1, delay: 1, x: 2 });
+// gsap.to(group.position, { duration: 1, delay: 2, x: 0 });
+
+/**
+ * Controls
+ */
+// Use orbit controls to update the camera
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
+
 const tick = () => {
 	const elapsedTime = clock.getElapsedTime();
+
+	// important for damping!
+	controls.update();
+
+	// Update camera manually, invert y (other way round in threejs)
+	/*camera.position.x = Math.sin(cursor.x * Math.PI * 2) * 3;
+	camera.position.z = Math.cos(cursor.x * Math.PI * 2) * 3;
+	camera.position.y = cursor.y * 5;
+	camera.lookAt(group.position);*/
+
+	//group.rotation.y = elapsedTime;
+
+	/*const elapsedTime = clock.getElapsedTime();
 	// console.log("tick", elapsedTime);
 
 	group.position.y = Math.sin(elapsedTime);
@@ -103,14 +156,14 @@ const tick = () => {
 
 	// elapsedTime * Math.PI * 0.1;
 	// group.rotation.z = elapsedTime;
-	// group.scale.y += 0.01;
+	// group.scale.y += 0.01;*/
 
 	renderer.render(scene, camera);
 
 	/* The window.requestAnimationFrame() method tells the browser you wish to perform an animation. It requests the browser to call a user-supplied callback function before the next repaint.
 	The frequency of calls to the callback function will generally match the display refresh rate. The most common refresh rate is 60hz. Source: 
-	https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame*/
-
+	https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
+	*/
 	window.requestAnimationFrame(tick);
 };
 
