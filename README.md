@@ -13,7 +13,7 @@ Linter and formatting commands: [https://biomejs.dev/guides/getting-started/#usa
 ## Pomodoros 🍅
 
 03.12.2023 🍅
-10.12.2023 🍅
+10.12.2023 🍅🍅
 
 ## How was this created?
 
@@ -30,3 +30,7 @@ npm install -D sass
 ```
 
 See [lesson](https://threejs-journey.com/lessons/first-threejs-project#) for more information.
+
+## Credits
+
+Source code was created by following the lessons on https://threejs-journey.com/ by Bruno Simon. Image Assets like static/door.jpg are created by Bruno Simon as well.

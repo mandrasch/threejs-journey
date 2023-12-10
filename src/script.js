@@ -10,10 +10,11 @@ const scene = new THREE.Scene();
 
 // Object
 const geometry = new THREE.BoxGeometry(1, 1, 1);
-// debug with 	wireframe: true,
+
 const material = new THREE.MeshBasicMaterial({
 	color: 0xff0000,
-	wireframe: true,
+	// debug with 	wireframe: true,
+	// wireframe: true,
 });
 const mesh = new THREE.Mesh(geometry, material);
 scene.add(mesh);
