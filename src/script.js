@@ -36,32 +36,27 @@ const cube3 = new THREE.Mesh(
 cube3.position.x = -2;
 group.add(cube3);
 
-// Object
-const geometry = new THREE.BoxGeometry(1, 1, 1);
-
-const material = new THREE.MeshBasicMaterial({
-	color: 0xff0000,
-	// debug with 	wireframe: true,
-	wireframe: true,
-});
-const mesh = new THREE.Mesh(geometry, material);
-
 // Axes helper
 const axesHelper = new THREE.AxesHelper(2);
 scene.add(axesHelper);
 
-// Positioning
+// Object
+/*const geometry = new THREE.BoxGeometry(1, 1, 1);
+const material = new THREE.MeshBasicMaterial({
+	color: "cyan",
+	// debug with 	wireframe: true,
+	wireframe: true,
+});
+const mesh = new THREE.Mesh(geometry, material);
+scene.add(mesh);
 mesh.position.set(0.7, -0.6, 0.3); // x, y, z
-
-// Scale
 mesh.scale.set(2, 0.25, 0.5);
-
 // Rotation - euler angles
 // beware: goes by default in order of x,y, z
 mesh.rotation.reorder("YXZ");
 mesh.rotation.y = Math.PI * 0.25; // 3.14159, half rotation (or Math.PI * 2 for full rotation)
 mesh.rotation.x = Math.PI * 0.25;
-console.log(mesh.position.length()); // 0.9219544457292886 (distance of center of scene <-> object position)
+console.log(mesh.position.length()); // 0.9219544457292886 (distance of center of scene <-> object position)*/
 
 // Camera
 const sizes = {
@@ -76,15 +71,13 @@ const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height);
 camera.position.set(null, null, 3); // z = camera is moved backward before
 
 // distance between object and camera
-console.log(mesh.position.distanceTo(camera.position));
+// console.log(mesh.position.distanceTo(camera.position));
 // https://threejs.org/docs/#api/en/math/Vector3.normalize
 // mesh.position.normalize();
-console.log(mesh.position.length()); // will be 1 after normalize
+//console.log(mesh.position.length()); // will be 1 after normalize
 
 // Look At
-camera.lookAt(mesh.position);
-
-// Groups
+camera.lookAt(group.position);
 
 // Renderer
 const renderer = new THREE.WebGLRenderer({
@@ -93,3 +86,32 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(sizes.width, sizes.height);
 
 renderer.render(scene, camera);
+
+// Animations
+
+// used to show animations on same speed on all monitor frequencies
+const clock = new THREE.Clock();
+
+const tick = () => {
+	const elapsedTime = clock.getElapsedTime();
+	// console.log("tick", elapsedTime);
+
+	group.position.y = Math.sin(elapsedTime);
+	group.position.x = Math.cos(elapsedTime);
+
+	camera.lookAt(group.position);
+
+	// elapsedTime * Math.PI * 0.1;
+	// group.rotation.z = elapsedTime;
+	// group.scale.y += 0.01;
+
+	renderer.render(scene, camera);
+
+	/* The window.requestAnimationFrame() method tells the browser you wish to perform an animation. It requests the browser to call a user-supplied callback function before the next repaint.
+	The frequency of calls to the callback function will generally match the display refresh rate. The most common refresh rate is 60hz. Source: 
+	https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame*/
+
+	window.requestAnimationFrame(tick);
+};
+
+tick();
