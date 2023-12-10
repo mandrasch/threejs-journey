@@ -8,10 +8,12 @@ npm install
 npm run dev
 ```
 
+Linter and formatting commands: [https://biomejs.dev/guides/getting-started/#usage]
+
 ## Pomodoros 🍅
 
 03.12.2023 🍅
-10.12.2023
+10.12.2023 🍅
 
 ## How was this created?
 
@@ -22,6 +24,9 @@ npm install vite
 npm install --save-dev --save-exact @biomejs/biome
 
 npm install three
+
+# add scss support 
+npm install -D sass
 ```
 
 See [lesson](https://threejs-journey.com/lessons/first-threejs-project#) for more information.
