@@ -1,0 +1,216 @@
+import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import GUI from "lil-gui";
+// https://threejs.org/docs/#examples/en/loaders/GLTFLoader
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
+
+/**
+ * Base
+ */
+// Debug
+const gui = new GUI();
+
+// https://lil-gui.georgealways.com/
+// Create dropdowns by passing an array or object of named values
+const debugSettings = {
+	modelToLoad: "duck",
+};
+const modelDropdownController = gui.add(debugSettings, "modelToLoad", {
+	Duck: "duck",
+	"Duck (Draco loader via WASM)": "duck-draco",
+	Helmet: "helmet",
+	"Fox (Animated)": "fox",
+});
+modelDropdownController.onChange(loadSelectedModel);
+
+// Canvas
+const canvas = document.querySelector("canvas.webgl");
+
+// Scene
+const scene = new THREE.Scene();
+
+// Animation Mixer
+let mixer = null;
+
+/**
+ * Models
+ */
+const gltfLoader = new GLTFLoader();
+
+const dracoLoader = new DRACOLoader();
+dracoLoader.setDecoderPath("/draco/");
+gltfLoader.setDRACOLoader(dracoLoader);
+
+let currentModel; // state
+loadSelectedModel("duck");
+
+function loadModel(modelPath) {
+	gltfLoader.load(
+		modelPath,
+		(gltf) => {
+			console.log("success, gltf file loaded", { gltf });
+
+			currentModel = gltf.scene;
+
+			// Special case, scaling needed for Fox + animation
+			if (modelPath === "/models/Fox/glTF/Fox.gltf") {
+				mixer = new THREE.AnimationMixer(gltf.scene);
+
+				// multiple animations are contained
+				// const action = mixer.clipAction(gltf.animations[0]);
+				const action = mixer.clipAction(gltf.animations[1]);
+				console.log(action);
+				action.play();
+
+				gltf.scene.scale.set(0.025, 0.025, 0.025);
+			}
+
+			scene.add(gltf.scene);
+		},
+		() => {
+			console.log("progress");
+		},
+		() => {
+			console.log("error");
+		},
+	);
+}
+
+function loadSelectedModel(selectedModel) {
+	console.log("loadSelectedModel", { selectedModel });
+
+	// Remove the current model from the scene if exists
+	if (currentModel) {
+		console.log("Current model found, removing it from scene", {
+			currentModel,
+		});
+		scene.remove(currentModel);
+	}
+
+	if (selectedModel === "duck") {
+		loadModel("/models/Duck/glTF-Embedded/Duck.gltf");
+	}
+
+	if (selectedModel === "helmet") {
+		loadModel("/models/FlightHelmet/glTF/FlightHelmet.gltf");
+	}
+
+	if (selectedModel === "duck-draco") {
+		loadModel("/models/Duck/glTF-Draco/Duck.gltf");
+	}
+
+	if (selectedModel === "fox") {
+		loadModel("/models/Fox/glTF/Fox.gltf");
+	}
+}
+/**
+ * Floor
+ */
+const floor = new THREE.Mesh(
+	new THREE.PlaneGeometry(10, 10),
+	new THREE.MeshStandardMaterial({
+		color: "#444444",
+		metalness: 0,
+		roughness: 0.5,
+	}),
+);
+floor.receiveShadow = true;
+floor.rotation.x = -Math.PI * 0.5;
+scene.add(floor);
+
+/**
+ * Lights
+ */
+const ambientLight = new THREE.AmbientLight(0xffffff, 2.4);
+scene.add(ambientLight);
+
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1.8);
+directionalLight.castShadow = true;
+directionalLight.shadow.mapSize.set(1024, 1024);
+directionalLight.shadow.camera.far = 15;
+directionalLight.shadow.camera.left = -7;
+directionalLight.shadow.camera.top = 7;
+directionalLight.shadow.camera.right = 7;
+directionalLight.shadow.camera.bottom = -7;
+directionalLight.position.set(5, 5, 5);
+scene.add(directionalLight);
+
+/**
+ * Sizes
+ */
+const sizes = {
+	width: window.innerWidth,
+	height: window.innerHeight,
+};
+
+window.addEventListener("resize", () => {
+	// Update sizes
+	sizes.width = window.innerWidth;
+	sizes.height = window.innerHeight;
+
+	// Update camera
+	camera.aspect = sizes.width / sizes.height;
+	camera.updateProjectionMatrix();
+
+	// Update renderer
+	renderer.setSize(sizes.width, sizes.height);
+	renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+});
+
+/**
+ * Camera
+ */
+// Base camera
+const camera = new THREE.PerspectiveCamera(
+	75,
+	sizes.width / sizes.height,
+	0.1,
+	100,
+);
+camera.position.set(2, 2, 2);
+scene.add(camera);
+
+// Controls
+const controls = new OrbitControls(camera, canvas);
+controls.target.set(0, 0.75, 0);
+controls.enableDamping = true;
+
+/**
+ * Renderer
+ */
+const renderer = new THREE.WebGLRenderer({
+	canvas: canvas,
+});
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.setSize(sizes.width, sizes.height);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+/**
+ * Animate
+ */
+const clock = new THREE.Clock();
+let previousTime = 0;
+
+const tick = () => {
+	const elapsedTime = clock.getElapsedTime();
+	const deltaTime = elapsedTime - previousTime;
+	previousTime = elapsedTime;
+
+	// Update animation mixer
+	if (mixer !== null) {
+		mixer.update(deltaTime);
+	}
+
+	// Update controls
+	controls.update();
+
+	// Render
+	renderer.render(scene, camera);
+
+	// Call tick again on the next frame
+	window.requestAnimationFrame(tick);
+};
+
+tick();
