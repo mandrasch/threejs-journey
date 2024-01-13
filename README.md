@@ -2,6 +2,12 @@
 
 Starting my threejs learning journey with https://threejs-journey.com/ 🎉 
 
+Live Preview: https://threejs-journey-mandrasch.vercel.app/
+
+QR Code: coming soon
+
+## Local Setup
+
 
 ```
 npm install
@@ -14,6 +20,7 @@ Linter and formatting commands: [https://biomejs.dev/guides/getting-started/#usa
 
 03.12.2023 🍅
 10.12.2023 🍅🍅🍅🍅🍅🍅
+13.01.2024 🍅🍅
 
 ## How was this created?
 

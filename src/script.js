@@ -20,20 +20,43 @@ const canvas = document.querySelector(".webgl");
 // Scene
 const scene = new THREE.Scene();
 
-/**
- * Objects
- */
+// Group
 const group = new THREE.Group();
 // group.position.y = -2;
 // group.position.x = 1.5;
 scene.add(group);
 
+/**
+ * Own geometry
+ * Create own geometry, use Float32Array (easier for the computer to handle)
+ */
+
+// https://threejs.org/docs/#api/en/core/BufferGeometry
+const bufferGeometry = new THREE.BufferGeometry();
+
+// We create triangles
+const totalElementsCount = 300;
+const positionsArray = new Float32Array(totalElementsCount * 3 * 3); // every triangle has 3 vertices with x,y,z
+
+for (let i = 0; i < totalElementsCount * 3 * 3; i++) {
+	positionsArray[i] = (Math.random() - 0.5) * 4;
+}
+
+// https://threejs.org/docs/#api/en/core/BufferAttribute
+const positionsAttribute = new THREE.BufferAttribute(positionsArray, 3);
+bufferGeometry.setAttribute("position", positionsAttribute);
+
+/**
+ * Objects
+ */
+
 const cube1 = new THREE.Mesh(
-	new THREE.BoxGeometry(1, 1, 1),
+	// new THREE.BoxGeometry(1, 1, 1, 3, 3, 3),
+	bufferGeometry,
 	new THREE.MeshBasicMaterial({
 		color: "green",
 		// for debugging
-		// wireframe: true,
+		wireframe: true,
 	}),
 );
 group.add(cube1);
