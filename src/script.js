@@ -3,6 +3,12 @@ console.log("JavaScript is working");
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import gsap from "gsap";
+import GUI from "lil-gui";
+
+/**
+ * Debug UI
+ */
+const gui = new GUI();
 
 const cursor = {
 	x: 0,
@@ -51,8 +57,7 @@ bufferGeometry.setAttribute("position", positionsAttribute);
  */
 
 const cube1 = new THREE.Mesh(
-	// new THREE.BoxGeometry(1, 1, 1, 3, 3, 3),
-	bufferGeometry,
+	new THREE.BoxGeometry(1, 1, 1, 3, 3, 3),
 	new THREE.MeshBasicMaterial({
 		color: "green",
 		// for debugging
@@ -60,6 +65,20 @@ const cube1 = new THREE.Mesh(
 	}),
 );
 group.add(cube1);
+
+// Add debuggigung
+gui.add(cube1.position, "y").min(-3).max(3).step(0.01);
+
+/*
+const triangles = new THREE.Mesh(
+	bufferGeometry,
+	new THREE.MeshBasicMaterial({
+		color: "green",
+		// for debugging
+		wireframe: true,
+	}),
+);
+group.add(triangles);*/
 
 /*const cube2 = new THREE.Mesh(
 	new THREE.BoxGeometry(1, 1, 1),
