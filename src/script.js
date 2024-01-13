@@ -30,7 +30,11 @@ scene.add(group);
 
 const cube1 = new THREE.Mesh(
 	new THREE.BoxGeometry(1, 1, 1),
-	new THREE.MeshBasicMaterial({ color: "green", wireframe: false }),
+	new THREE.MeshBasicMaterial({
+		color: "green",
+		// for debugging
+		// wireframe: true,
+	}),
 );
 group.add(cube1);
 
@@ -72,9 +76,40 @@ console.log(mesh.position.length()); // 0.9219544457292886 (distance of center o
 
 // Camera
 const sizes = {
-	width: 800,
-	height: 600,
+	width: window.innerWidth,
+	height: window.innerHeight,
 };
+
+window.addEventListener("resize", () => {
+	// Update sizes
+	sizes.width = window.innerWidth;
+	sizes.height = window.innerHeight;
+
+	// Update camera
+	camera.aspect = sizes.width / sizes.height;
+	camera.updateProjectionMatrix();
+
+	// Update renderer
+	renderer.setSize(sizes.width, sizes.height);
+	// Resize will also be triggered when moved to another screen
+	const pixelRatio = Math.min(window.devicePixelRatio, 2);
+	renderer.setPixelRatio(pixelRatio);
+
+	console.log("Window has been resized, new values:", {
+		width: sizes.width,
+		height: sizes.height,
+		pixelRatio: pixelRatio,
+	});
+});
+
+window.addEventListener("dblclick", () => {
+	// for older safari browsers, a workaround would be needed https://stackoverflow.com/a/68803093
+	if (!document.fullscreenElement) {
+		canvas.requestFullscreen();
+	} else {
+		document.exitFullscreen();
+	}
+});
 
 // field of view = 75, high (easier for beginners), aspect ratio
 // Camera frustum vertical field of view, from bottom to top of view, in degrees. Default is 50.
@@ -113,6 +148,8 @@ const renderer = new THREE.WebGLRenderer({
 	canvas,
 });
 renderer.setSize(sizes.width, sizes.height);
+// Handle different monitors
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
 renderer.render(scene, camera);
 

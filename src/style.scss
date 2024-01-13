@@ -1,7 +1,18 @@
-body{
-    font-family: 'Inter', 'Arial', sans-serif;
+* {
+  margin: 0;
+  padding: 0;
 }
 
-canvas.webgl{
-    border: 1px dotted #333;
+html,
+body {
+  font-family: "Inter", "Arial", sans-serif;
+  overflow: hidden;
+}
+
+canvas.webgl {
+  border: 1px dotted #333;
+  position: fixed;
+  top: 0;
+  left: 0;
+  outline: none;
 }
