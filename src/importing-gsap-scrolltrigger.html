@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>03 - First Three.js Project</title>
+    <link rel="stylesheet" href="./style-importing-gsap-scrolltrigger.scss" />
+  </head>
+  <body>
+    <!-- Back to Homepage SVG Button -->
+    <div
+      style="
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        cursor: pointer;
+        z-index: 2;
+      "
+    >
+      <a
+        href="/"
+        style="
+          text-decoration: none;
+          color: white;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        "
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          width="24"
+          height="24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+        <span style="margin-left: 5px">Back to Homepage</span>
+      </a>
+    </div>
+
+    <canvas class="webgl"></canvas>
+
+    <script
+      type="module"
+      src="./script-importing-gsap-scrolltrigger.js"
+    ></script>
+  </body>
+</html>

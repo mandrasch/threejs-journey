@@ -1,0 +1,21 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  font-family: "Inter", "Arial", sans-serif;
+  text-align: center;
+}
+body {
+  padding-bottom: 1000px;
+}
+
+canvas.webgl {
+  // border: 1px dotted #333;
+  width: 500px;
+  height: 500px;
+  outline: none;
+  margin: 500px auto;
+}

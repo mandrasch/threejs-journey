@@ -14,6 +14,7 @@ export default {
 			input: {
 				main: "./src/index.html",
 				importing: "./src/importing.html",
+				importingGsapScrolltrigger: "./src/importing-gsap-scrolltrigger.html",
 				lessons: "./src/lessons.html",
 			},
 		},
